@@ -1,0 +1,12 @@
+add naming, trait and type allocating to items
+add inventory system
+dynamic allocation for map size
+dynamic allocation of item spawn rates
+migrate player actions to player actions.h/c
+
+deallocation of:
+-items
+-entities
+-item list
+-item map
+-eventually the map after dynamic map size is implemented
