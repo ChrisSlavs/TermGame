@@ -29,7 +29,7 @@ typedef struct {
   int itemId;
 } Item;
 
-void addItem (Item** head, Item* newItem, int itemId);
+void AddItem (Item** head, Item* newItem, int itemId);
 
 
 #endif

@@ -25,7 +25,7 @@ void PrintMap(Map map, Player player) {
   } // end outer for
 } // end func
 
-int initTiles(Map* map, Item (*item)[], int (*itemMap)[2], int itemWeight) {
+int InitTiles(Map* map, Item (*item)[], int (*itemMap)[2], int itemWeight) {
     int success = 1;
 
     // Initialization of Tile elements
@@ -45,13 +45,13 @@ int initTiles(Map* map, Item (*item)[], int (*itemMap)[2], int itemWeight) {
             map->tiles[row][col].item = &(*item)[i];
         } 
         else {
-          addItem(&map->tiles[row][col].item, &(*item)[i], i);
+          AddItem(&map->tiles[row][col].item, &(*item)[i], i);
         }
     }
   return success;
 }
 
-int initItems(int (*itemMap)[2], Item (*item)[]) {
+int InitItems(int (*itemMap)[2], Item (*item)[]) {
   int success = 1;
   
   int i = 0;
@@ -73,7 +73,7 @@ int initItems(int (*itemMap)[2], Item (*item)[]) {
 }
 
 // create array of coordinates to gen items
-int getItemMap(int (*itemMap)[2], int spawnWeight, int seed) {
+int GetItemMap(int (*itemMap)[2], int spawnWeight, int seed) {
   int success = 1;
   // set seed to null in main
   if (!seed) {

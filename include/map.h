@@ -5,8 +5,9 @@
 #include <player.h>
 #include <time.h>
 
-#define COLS 10
-#define ROWS 10
+// max map size
+#define COLS 20
+#define ROWS 20
 
 
 
@@ -21,9 +22,9 @@ typedef struct {
 } Map;
 
 void PrintMap(Map map, Player player);
-int initTiles(Map* map, Item (*item)[], int (*itemMap)[2], int itemWeight);
-int initItems(int (*itemMap)[2], Item (*item)[]);
-int getItemMap(int (*itemMap)[2], int spawnWeight, int seed);
+int InitTiles(Map* map, Item (*item)[], int (*itemMap)[2], int itemWeight);
+int InitItems(int (*itemMap)[2], Item (*item)[]);
+int GetItemMap(int (*itemMap)[2], int spawnWeight, int seed);
 
 
 

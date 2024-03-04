@@ -1,6 +1,6 @@
 #include <player.h>
 
-Player* playerInit(char symbol, int location[2]) {
+Player* PlayerInit(char symbol, int location[2]) {
   Player* player = malloc(sizeof(Player));
 
   player->symbol = symbol;

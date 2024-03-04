@@ -5,11 +5,11 @@ int PickUpItem (Map* map, int loc[2], Inventory* inventory) {
   int success = 1;
 
   // add check to make sure invent space is available
-  int i = 1;
+  int i = 0;
   Item* node = inventory->item;
   while (node != NULL) {
-    node = node->next;
     i++;
+    node = node->next;
   }
   // top of stack item
   Item* worldItem = map->tiles[loc[0]][loc[1]].item;
@@ -42,7 +42,7 @@ int PickUpItem (Map* map, int loc[2], Inventory* inventory) {
 }
 
 
-int movePlayer(char userIn, Player* player) {
+int MovePlayer(char userIn, Player* player) {
   int val = 1;
   int move[2] = {0, 0};
   int tempLoc[2] = {0, 0};
@@ -61,7 +61,7 @@ int movePlayer(char userIn, Player* player) {
       move[1] = 1;
       break;
   }
-  
+
   tempLoc[0] = move[0] + player->location[0];
   tempLoc[1] = move[1] + player->location[1];
 
@@ -75,4 +75,77 @@ int movePlayer(char userIn, Player* player) {
     val = 0;
   }
   return val;
+}
+
+// finish these two
+// displays 8 items per page
+// get page count
+// get proper start index
+int DisplayInventory(Inventory* inventory, int page) {
+  printf("\nInventory \n");
+  
+  // parse through linked list
+  int startNodeIndex = 0;
+  if (page != 0) {
+    startNodeIndex = page * 8;
+  }
+
+  int i = startNodeIndex;
+  Item* node = inventory->item;
+  int ch = 97; //ascii a
+  do {
+      printf("%c: %c\n", ch, node->symbol);
+      node = node->next;
+      ch++;
+      i++;
+  } while ((node != NULL) && (i % 8 != 0));
+
+  return i;
+}
+
+// these linked lists are fun maybe im using them too much
+int HandleInventory(int pageCount) {
+  const int aVal = 97;
+  const int printSize = 8;
+
+  int invPage = 0;
+  char userIn = ' ';
+  int quit = 0;
+  do {
+    userIn = _getch();
+
+    switch (userIn) {
+    case 'a':
+    case 'b':
+    case 'c':
+    case 'd':
+    case 'e':
+    case 'f':
+    case 'g':
+    case 'h':
+    case 'i':
+      int itemIndex = userIn + (invPage * printSize);
+      int i = 0;
+      break;
+    case '/':
+      if (!(invPage >= pageCount)) {
+        invPage += 1;
+      }
+      break;
+    case '\\':
+      if (!(invPage <= 0)) {
+        invPage -= 1;
+
+      }
+      break;
+    // break out of menu
+    case 'q':
+    case 'Q':
+      quit = 1;
+      break;
+    default:
+      break;
+    }
+  } while (!quit);
+  return quit;
 }

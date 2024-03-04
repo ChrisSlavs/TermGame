@@ -9,6 +9,7 @@
 
 
 
+
 typedef struct {
   Item* item;
 } Inventory;
@@ -20,8 +21,6 @@ typedef struct {
 } Player;
 
 // returns pointer to player
-Player* playerInit(char symbol, int location[2]);
-
-
+Player* PlayerInit(char symbol, int location[2]);
 
 #endif

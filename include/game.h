@@ -6,11 +6,9 @@
 #include <player.h>
 #include <conio.h>
 #include <playeractions.h>
-
-#define ITEM_WEIGHT 10
-
+#define ITEM_WEIGHT 50
 
 
-void eventHandler(Player* player, Map* map, Inventory* inventory);
+void HandleEvents(Player* player, Map* map, Inventory* inventory);
 
 #endif

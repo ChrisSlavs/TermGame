@@ -1,11 +1,10 @@
 #include <game.h>
 
-void eventHandler(Player* player, Map* map, Inventory* inventory) {
+void HandleEvents(Player* player, Map* map, Inventory* inventory) {
   int valMove = 1;
   char userIn = ' ';
 
   // do while avoids infiite repitition
-  
   do {
     // whitespace padding avoids a newline input error
     if(!valMove) {
@@ -19,7 +18,7 @@ void eventHandler(Player* player, Map* map, Inventory* inventory) {
       case 's':
       case 'a':
       case 'd':
-        valMove = movePlayer(userIn, player);
+        valMove = MovePlayer(userIn, player);
         break;
       case 'g':
         valMove = PickUpItem(map, (int[]){player->location[0], player->location[1]}, inventory);
@@ -28,10 +27,10 @@ void eventHandler(Player* player, Map* map, Inventory* inventory) {
         printf("\nWaiting a turn.");
         break;
       case 'i':
+        HandleInventory(DisplayInventory(inventory, 0));
         break;
       default:
         printf("\ninvalid key!\n");
-        printf("Please enter a new move: ");
         valMove = 0;
         break;
     }
