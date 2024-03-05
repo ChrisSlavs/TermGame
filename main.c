@@ -36,9 +36,6 @@ int main(void) {
   // item generation
   int (*itemMap)[2] = (int(*)[2])malloc(sizeof(int[2]) * ITEM_WEIGHT + 1);
   GetItemMap(itemMap, ITEM_WEIGHT, 44595146);
-  for (int i = 0; i < ITEM_WEIGHT; i++) {
-    printf("%d , %d\n", itemMap[i][0], itemMap[i][1]);
-  }
   Item (*item)[ITEM_WEIGHT] = (Item(*)[])malloc(sizeof(Item) * ITEM_WEIGHT + 1);
 
   // init map items

@@ -6,8 +6,8 @@
 #include <time.h>
 
 // max map size
-#define COLS 20
-#define ROWS 20
+#define COLS 4
+#define ROWS 4
 
 
 

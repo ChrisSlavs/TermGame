@@ -8,12 +8,13 @@ int PickUpItem (Map* map, int loc[2], Inventory* inventory) {
   int i = 0;
   Item* node = inventory->item;
   while (node != NULL) {
+    printf("Item ID: %d\n", node->itemId);
     i++;
     node = node->next;
   }
   // top of stack item
   Item* worldItem = map->tiles[loc[0]][loc[1]].item;
-  if (i >= 12) {
+  if (i >= INVENTORY_MAX) {
     success = 0;
     printf("Your inventory is full\n");
   }
@@ -70,82 +71,63 @@ int MovePlayer(char userIn, Player* player) {
     player->location[1] = tempLoc[1];
   }
   else {
-    printf("\nMovement blocked!");
-    printf("Please enter a new move: ");
+    printf("\nMovement blocked!\n");
     val = 0;
   }
   return val;
 }
 
-// finish these two
-// displays 8 items per page
-// get page count
-// get proper start index
-int DisplayInventory(Inventory* inventory, int page) {
-  printf("\nInventory \n");
-  
-  // parse through linked list
-  int startNodeIndex = 0;
-  if (page != 0) {
-    startNodeIndex = page * 8;
-  }
 
-  int i = startNodeIndex;
-  Item* node = inventory->item;
-  int ch = 97; //ascii a
+int HandleInventory(Inventory* inventory) {
+  const int MENU_SIZE = 6;
+  int maxPages = (INVENTORY_MAX + (MENU_SIZE - 1)) / MENU_SIZE;  
+
+  int page = 1;
+  Item* items[INVENTORY_MAX] = {NULL};
+  Item* item = inventory->item;
+  int i = 0;
   do {
-      printf("%c: %c\n", ch, node->symbol);
-      node = node->next;
-      ch++;
+      items[i] = item;
+      item = item->next;
       i++;
-  } while ((node != NULL) && (i % 8 != 0));
-
-  return i;
-}
-
-// these linked lists are fun maybe im using them too much
-int HandleInventory(int pageCount) {
-  const int aVal = 97;
-  const int printSize = 8;
-
-  int invPage = 0;
-  char userIn = ' ';
+  } while (item != NULL);
+  
+  // looping variables
+  char menu = 'a';
+  // user input
+  char userIn;
+  // quit
   int quit = 0;
+  // index of where to start printing menu
+  int start = 0;
+  // index of item in items
+  int itemIndex = 0;
   do {
-    userIn = _getch();
-
-    switch (userIn) {
-    case 'a':
-    case 'b':
-    case 'c':
-    case 'd':
-    case 'e':
-    case 'f':
-    case 'g':
-    case 'h':
-    case 'i':
-      int itemIndex = userIn + (invPage * printSize);
-      int i = 0;
-      break;
-    case '/':
-      if (!(invPage >= pageCount)) {
-        invPage += 1;
-      }
-      break;
-    case '\\':
-      if (!(invPage <= 0)) {
-        invPage -= 1;
-
-      }
-      break;
-    // break out of menu
-    case 'q':
-    case 'Q':
-      quit = 1;
-      break;
-    default:
-      break;
+    start = ((page - 1) * MENU_SIZE);
+    printf("start: %d\n", start);
+    menu = 'a';
+    for (int j = start; (j < (page * MENU_SIZE)) && (j < i); j++) {
+      printf("%c, %d\n", menu++, items[j]->itemId);
     }
+    printf("DEBUG 1\n");
+  
+    userIn = _getch();
+    printf("Page %d\n", page);
+    // ITEM SELECTION HERE
+    if (userIn >= 97 && userIn < 97 + MENU_SIZE) {
+      itemIndex = (userIn + ((page - 1) * MENU_SIZE)) - 97;
+      printf("ItemId: %d\n", items[itemIndex]->itemId);
+    }
+    else if (userIn == '\\' && page > 1) {
+      page -= 1;
+    } // end elif
+    else if (userIn == '/' && page < maxPages) {
+      page += 1;
+    } //end elif
+    
   } while (!quit);
-  return quit;
+
+  return 0;
 }
+
+

@@ -27,7 +27,7 @@ void HandleEvents(Player* player, Map* map, Inventory* inventory) {
         printf("\nWaiting a turn.");
         break;
       case 'i':
-        HandleInventory(DisplayInventory(inventory, 0));
+        HandleInventory(inventory);
         break;
       default:
         printf("\ninvalid key!\n");

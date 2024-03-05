@@ -45,7 +45,8 @@ int InitTiles(Map* map, Item (*item)[], int (*itemMap)[2], int itemWeight) {
             map->tiles[row][col].item = &(*item)[i];
         } 
         else {
-          AddItem(&map->tiles[row][col].item, &(*item)[i], i);
+          // do not add item id here
+          AddItem(&map->tiles[row][col].item, &(*item)[i], -1);
         }
     }
   return success;
@@ -59,6 +60,7 @@ int InitItems(int (*itemMap)[2], Item (*item)[]) {
     Item* newItem = malloc(sizeof(Item));
     if (newItem != NULL) {
       newItem->symbol = 'P';
+      newItem->itemId = i;
       newItem->next = NULL;
     }
     else {
