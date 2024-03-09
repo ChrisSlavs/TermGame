@@ -3,6 +3,7 @@
 void PrintMap(Map map, Player player) {
   // char to be printed on each tile
   char print;
+  printf("\n");
   for (int i = 0; i < ROWS; i++) {
     for (int j = 0; j < COLS; j++) {
       Tile tile = map.tiles[i][j];
@@ -52,57 +53,44 @@ int InitTiles(Map* map, Item (*item)[], int (*itemMap)[2], int itemWeight) {
   return success;
 }
 
-int InitItems(int (*itemMap)[2], Item (*item)[]) {
-  int success = 1;
-  
-  int i = 0;
-  while (itemMap[i][0] != -1 && itemMap[i][1] != -1) {
-    Item* newItem = malloc(sizeof(Item));
-    if (newItem != NULL) {
-      newItem->symbol = 'P';
-      newItem->itemId = i;
-      newItem->next = NULL;
-    }
-    else {
-      printf("Failed to initialize item!\n");
-      success = 0;
-    }
-    (*item)[i] = *newItem;
-    i++;
-  }
-  
-  return success;
+void FreeTile(Tile* tile) {
+  free(tile);
+  return;
 }
 
-// create array of coordinates to gen items
-int GetItemMap(int (*itemMap)[2], int spawnWeight, int seed) {
-  int success = 1;
-  // set seed to null in main
-  if (!seed) {
-    srand(time(NULL));
+void UnloadMap(Map* map) {
+  for (int i = 0; i < ROWS; i++) {
+    for (int j = 0; j < COLS; j++) {
+      map->tiles[i][j].item = NULL;
+      FreeTile(&map->tiles[i][j]);
+    }
   }
-  else {
-    srand(seed);
-  }
-  
-  for (int i = 0; i < spawnWeight; i++) {
-    itemMap[i][0] = 0;
-    itemMap[i][1] = 0;
-  }
+  return;
+}
 
-  // init sentinel vals
-  itemMap[spawnWeight][0] = -1;
-  itemMap[spawnWeight][0] = -1;
+int InitTilesTwo(Map* map, Item (*item)[], int (*itemMap)[2], int itemWeight) {
+    int success = 1;
 
-  if (!itemMap) {
-    printf("Error generating item map!\n");
-    success= 0;
-  }
+    // Initialization and assignmnent of Tile elements
+    for (int i = 0; i < ROWS; i++) {
+        for (int j = 0; j < COLS; j++) {
+            Tile tile = {'.', NULL};
+            map->tiles[i][j] = tile;
+        }
+    }
 
-  for (int i = 0; i < spawnWeight; i++) {
-    itemMap[i][0] = rand() % ROWS;
-    itemMap[i][1] = rand() % COLS;
-  }
+    // Associating items with tiles based on itemMap
+    for (int i = 0; i < itemWeight; i++) {
+        int row = itemMap[i][0];
+        int col = itemMap[i][1];
 
+        if (map->tiles[row][col].item == NULL) {
+            map->tiles[row][col].item = &(*item)[i];
+        } 
+        else {
+          // do not add item id here
+          AddItem(&map->tiles[row][col].item, &(*item)[i], -1);
+        }
+    }
   return success;
 }

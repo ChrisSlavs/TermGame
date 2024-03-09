@@ -6,8 +6,11 @@
 #include <time.h>
 
 // max map size
-#define COLS 4
-#define ROWS 4
+#define COLS 20
+#define ROWS 20
+
+#define GROUND .
+#define WALL #
 
 
 
@@ -23,9 +26,9 @@ typedef struct {
 
 void PrintMap(Map map, Player player);
 int InitTiles(Map* map, Item (*item)[], int (*itemMap)[2], int itemWeight);
-int InitItems(int (*itemMap)[2], Item (*item)[]);
-int GetItemMap(int (*itemMap)[2], int spawnWeight, int seed);
 
-
+// finish these
+void FreeTile();
+void UnloadMap();
 
 #endif
