@@ -8,4 +8,8 @@ typedef struct {
 
 } Enemy;
 
+// finish these
+int InitEntity();
+int FreeEnemy();
+
 #endif

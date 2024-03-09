@@ -16,14 +16,15 @@
 ///TILE SETTINGS///
 const int ENTITY_MAX = 128;
 const int ITEM_MAX = 128;
-const char GROUND = '.';
-const char WALL = '#';
+const int seed = 44595146;
 
 ////////////// MAIN ////////////////
 int main(void) {
+  
   // game state
   int run = 1;
   // map
+  //////////// INIT ////////////////////
   Map map;
   // player init
   Player* playerPtr = PlayerInit('@', (int[]){1,2});
@@ -31,27 +32,30 @@ int main(void) {
     run = 0;
     printf("Player init failed!\n");
   }
-  Inventory inventory = {NULL};
-  //////////// INIT ////////////////////
   // item generation
-  int (*itemMap)[2] = (int(*)[2])malloc(sizeof(int[2]) * ITEM_WEIGHT + 1);
-  GetItemMap(itemMap, ITEM_WEIGHT, 44595146);
-  Item (*item)[ITEM_WEIGHT] = (Item(*)[])malloc(sizeof(Item) * ITEM_WEIGHT + 1);
+  // always free item map after genning items
+  int (*itemMap)[2] = malloc(sizeof(int*) * ITEM_WEIGHT + 1);
+  GetItemMap(itemMap, ITEM_WEIGHT, seed, ROWS, COLS);
+  Item (*items)[] = malloc(sizeof(Item) * ITEM_WEIGHT + 1);
 
   // init map items
-  InitItems(itemMap, item);
+  InitItems(itemMap, items);
   // init map tiles
-  InitTiles(&map, item, itemMap, ITEM_WEIGHT);
+  InitTiles(&map, items, itemMap, ITEM_WEIGHT);
+  free(itemMap);
 
   //////// GAME LOOP ///////////
-  
+  char message[512] = "";
   while(run) {
     // print game screen
     PrintMap(map, *playerPtr);
+    // messaging system based on player state
+    HandleState(playerPtr, message);
+    memcpy(message, "\0", 512);
 
     // event handler
-    HandleEvents(playerPtr, &map, &inventory);
+    run = HandleEvents(playerPtr, &map, message);
   }
-
+  FreeAll(&map, playerPtr, items);
   return 0;
 }
