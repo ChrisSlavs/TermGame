@@ -1,15 +1,10 @@
 #include <game.h>
 
-void HandleEvents(Player* player, Map* map, Inventory* inventory) {
-  int valMove = 1;
+int HandleEvents(Player* player, Map* map, char* message) {
   char userIn = ' ';
+  player->state = NONE;
 
-  // do while avoids infiite repitition
-  do {
     // whitespace padding avoids a newline input error
-    if(!valMove) {
-      PrintMap(*map, *player);
-    }
     printf("Please input next move: ");
     userIn = _getch();
     printf("%c\n", userIn);
@@ -18,21 +13,59 @@ void HandleEvents(Player* player, Map* map, Inventory* inventory) {
       case 's':
       case 'a':
       case 'd':
-        valMove = MovePlayer(userIn, player);
+        if(MovePlayer(player, userIn, message)) player->state = MOVING;
         break;
       case 'g':
-        valMove = PickUpItem(map, (int[]){player->location[0], player->location[1]}, inventory);
+        if (PickUpItem(player, map, message)) player->state = PICK_UP_ITEM;
         break;
       case '.':
-        printf("\nWaiting a turn.");
+        strcpy(message, "Waiting a turn.");
         break;
       case 'i':
-        HandleInventory(inventory);
+        if (player->inventory.item != NULL) HandleInventory(&player->inventory);
+        else strcpy(message, "Inventory empty!");
+        break;
+      case '~':
+        return 0;
         break;
       default:
-        printf("\ninvalid key!\n");
-        valMove = 0;
+        strcpy(message, "Invalid key!");
         break;
     }
-  } while (!valMove);
+  return 1;
 }
+
+void HandleState(Player* player, char* message) {
+  switch (player->state)
+  {
+  case PICK_UP_ITEM:
+    printf("%s: %c", message, player->inventory.item->symbol);
+    break;
+  default:
+    printf("%s", message);
+    break;
+  }
+  printf("\n");
+  return;
+}
+
+void FreeAll(Map* map, Player* player, Item (*items)[]) {
+  // frees all items
+  for (int i = 0; i < sizeof(items) / sizeof((*items)[0]); i++) {
+    FreeItem(&(*items)[i]);
+  }
+
+  //free item array;
+  free(items);
+
+  // frees all tiles
+  for (int i = 0; i < sizeof(map->tiles) / sizeof(map->tiles[0]); i++) {
+    for (int j = 0; sizeof(map->tiles) / sizeof(map->tiles[1]); j++) {
+      FreeTile(&map->tiles[i][j]);
+    }
+  }
+
+  return;
+}
+
+
