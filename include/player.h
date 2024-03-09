@@ -7,8 +7,12 @@
 
 #define INVENTORY_MAX 12
 
+typedef enum {
+    NONE,
+    PICK_UP_ITEM,
+    MOVING,
 
-
+} PlayerState;
 
 typedef struct {
   Item* item;
@@ -18,9 +22,14 @@ typedef struct {
   char symbol;
   int location[2];
   Inventory inventory;
+  // state
+  PlayerState state;
 } Player;
 
 // returns pointer to player
 Player* PlayerInit(char symbol, int location[2]);
+// finish these
+int FreePlayer();
+int FreeInventory();
 
 #endif
