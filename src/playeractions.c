@@ -1,26 +1,30 @@
 #include <playeractions.h>
 
-int PickUpItem (Map* map, int loc[2], Inventory* inventory) {
+int PickUpItem (Player* player, Map* map, char* message) {
   // retun val
   int success = 1;
+  // location variable for easier access
+  int loc[2] = {player->location[0], player->location[1]};
+  // Inventory variable for easier access
+  Inventory* inventory = &player->inventory; 
 
   // add check to make sure invent space is available
   int i = 0;
   Item* node = inventory->item;
   while (node != NULL) {
-    printf("Item ID: %d\n", node->itemId);
     i++;
     node = node->next;
   }
   // top of stack item
   Item* worldItem = map->tiles[loc[0]][loc[1]].item;
+  // check if full
   if (i >= INVENTORY_MAX) {
     success = 0;
-    printf("Your inventory is full\n");
+    strcpy(message, "Inventory full!\n");
   }
   else if (worldItem == NULL) {
     success = 0;
-    printf("There is nothing to pick up\n");
+    strcpy(message, "There is nothing to pickup!\n");
   }
   else {
     
@@ -35,7 +39,7 @@ int PickUpItem (Map* map, int loc[2], Inventory* inventory) {
     // set the first item in the inventory to what was picked up
     inventory->item = worldItem;
     // notify the player what was picked up
-    printf("You picked up %c\n\n", worldItem->symbol);
+    strcpy(message, "You picked up");
     // first item of tile is now what was the second item
     map->tiles[loc[0]][loc[1]].item = worldItemTwo;
   }
@@ -43,7 +47,7 @@ int PickUpItem (Map* map, int loc[2], Inventory* inventory) {
 }
 
 
-int MovePlayer(char userIn, Player* player) {
+int MovePlayer(Player* player, char userIn, char* message) {
   int val = 1;
   int move[2] = {0, 0};
   int tempLoc[2] = {0, 0};
@@ -71,14 +75,17 @@ int MovePlayer(char userIn, Player* player) {
     player->location[1] = tempLoc[1];
   }
   else {
-    printf("\nMovement blocked!\n");
+    strcpy(message, "Movement block!");
     val = 0;
   }
   return val;
 }
 
-
+// seperate context handle messaging here
 int HandleInventory(Inventory* inventory) {
+  // exit func
+  int quit = 0;
+
   const int MENU_SIZE = 6;
   int maxPages = (INVENTORY_MAX + (MENU_SIZE - 1)) / MENU_SIZE;  
 
@@ -96,37 +103,36 @@ int HandleInventory(Inventory* inventory) {
   char menu = 'a';
   // user input
   char userIn;
-  // quit
-  int quit = 0;
+
   // index of where to start printing menu
   int start = 0;
   // index of item in items
   int itemIndex = 0;
   do {
+    printf("\nPage %d\n", page);
     start = ((page - 1) * MENU_SIZE);
-    printf("start: %d\n", start);
-    menu = 'a';
+    menu = 'A';
     for (int j = start; (j < (page * MENU_SIZE)) && (j < i); j++) {
-      printf("%c, %d\n", menu++, items[j]->itemId);
-    }
-    printf("DEBUG 1\n");
+      printf("%c] %d\n", menu++, items[j]->itemId);
+    } // end for
   
     userIn = _getch();
-    printf("Page %d\n", page);
     // ITEM SELECTION HERE
     if (userIn >= 97 && userIn < 97 + MENU_SIZE) {
       itemIndex = (userIn + ((page - 1) * MENU_SIZE)) - 97;
-      printf("ItemId: %d\n", items[itemIndex]->itemId);
+      printf("\nItemId: %d\n", items[itemIndex]->itemId);
     }
     else if (userIn == '\\' && page > 1) {
       page -= 1;
     } // end elif
-    else if (userIn == '/' && page < maxPages) {
+    else if (userIn == '/' && page < maxPages && i > MENU_SIZE) {
       page += 1;
     } //end elif
-    
+    // quit
+    else if (userIn == 'Q' || userIn == 'q') {
+      quit = 1;
+    }
   } while (!quit);
-
   return 0;
 }
 

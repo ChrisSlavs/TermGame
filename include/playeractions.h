@@ -5,9 +5,12 @@
 #include <map.h>
 #include <items.h>
 #include <conio.h>
+#include <string.h>
 
-int PickUpItem(Map* map, int loc[2], Inventory* inventory);
-int MovePlayer(char userIn, Player* player);
+// allows player to pick up items
+int PickUpItem(Player* player, Map* map, char* message);
+// allows player to move
+int MovePlayer(Player* player, char userIn, char* message);
 int DisplayInventory(Inventory* inventory);
 int HandleInventory(Inventory* inventory);
 
